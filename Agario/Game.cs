@@ -1,6 +1,7 @@
 ﻿using SFML.Window;
 using SFML.Graphics;
 using System;
+using SFML.System;
 
 namespace Agario
 {
@@ -25,6 +26,8 @@ namespace Agario
         private static CircleShape[] AllMovingCircles;
 
         private CircleShape[] botsArray;
+
+        private Vector2f[] speeds = new Vector2f[7];
 
         public void Main()
         {
@@ -52,7 +55,8 @@ namespace Agario
         {
             for (int i = 0; i < botsArray.Length; i++)
             {
-                _circlesController.MoveBot(_eda.cookies, botsArray[i]);
+                _circlesController.MoveBot(_eda.cookies, botsArray[i], out speeds[i]);
+                botsArray[i].Position += speeds[i];
             }
         }
 

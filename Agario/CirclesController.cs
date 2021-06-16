@@ -23,57 +23,54 @@ namespace Agario
         private Vector2f _center;
 
         private double curDistance = 10000;
-        private double _newDistance;
 
-        private int _curTargetId;
-
-        private float _xDiff, _yDiff;
-        private Vector2f _diff;
-        private Vector2f _speed;
-        
         public void PlayerMove(CircleShape player)
         {
-            GetPosDiff(player);
-            CalcSpeed(player);
-            player.Position += _speed;
+            Vector2f speed;
+            GetPosDiff(player, out speed);
+            player.Position += speed;
         }
 
-        void CalcSpeed(CircleShape circle)
+        /*void CalcSpeed(Vector2f _diff)
         {
-            //if(!IsOutOfHeight(gameBall) && !IsOutOfWidth(gameBall))
-            //{
-            _speed = (_diff / 100);
-            //}
-        }
+            if(!IsOutOfHeight(gameBall) && !IsOutOfWidth(gameBall))
+            {
+                
+            }
+        }*/
 
-        void GetPosDiff(CircleShape player)
+        void GetPosDiff(CircleShape player, out Vector2f speed)
         {
-            math.GetCenter(player, player.Radius, out _center);
+            _center = math.Center(player, player.Radius);
             _mousePos = Mouse.GetPosition(window);
-            _xDiff = _mousePos.X - _center.X;
-            _yDiff = _mousePos.Y - _center.Y;
-            _diff = new Vector2f(_xDiff, _yDiff);
+            float xDiff = _mousePos.X - _center.X;
+            float yDiff = _mousePos.Y - _center.Y;
+            Vector2f diff = new Vector2f(xDiff, yDiff);
+            speed = (diff / 100);
         }
         
-        public void MoveBot(CircleShape[] edaArray, CircleShape botCircle)
+        public void MoveBot(CircleShape[] edaArray, CircleShape botCircle, out Vector2f botSpeed)
         {
-            CheckForDistance(edaArray, botCircle);
-            _xDiff = edaArray[_curTargetId].Position.X - botCircle.Position.X;
-            _yDiff = edaArray[_curTargetId].Position.Y - botCircle.Position.Y;
-            _diff = new Vector2f(_xDiff, _yDiff);
-            CalcSpeed(botCircle);
-            botCircle.Position += _speed;
+            int curTargetId;
+            CheckForDistance(edaArray, botCircle, out curTargetId);
+            float xDiff = edaArray[curTargetId].Position.X - botCircle.Position.X;
+            float yDiff = edaArray[curTargetId].Position.Y - botCircle.Position.Y;
+            Vector2f diff = new Vector2f(xDiff, yDiff);
+            botSpeed = (diff / 100);
         }
 
-        void CheckForDistance(CircleShape[] edaArray, CircleShape botCircle)
+        void CheckForDistance(CircleShape[] edaArray, CircleShape botCircle, out int curTargetId)
         {
+            curTargetId = 1;
+            
             for (int i = 0; i < edaArray.Length; i++)
-            { 
-                math.GetDistance(botCircle, edaArray[i], out _newDistance); 
-                if (_newDistance < curDistance)
+            {
+                double newDistance = math.Distance(botCircle, edaArray[i]);
+                
+                if (newDistance < curDistance)
                 {
-                    curDistance = _newDistance;
-                    _curTargetId = i;
+                    curDistance = newDistance;
+                    curTargetId = i;
                 }
             }
         }

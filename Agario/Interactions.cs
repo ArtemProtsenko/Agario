@@ -17,11 +17,11 @@ namespace Agario
         
         public void Eat(CircleShape eater, CircleShape food)
         {
-            math.GetDistance(eater, food, out distance);
+            distance = math.Distance(eater, food);
             
             if (IsCollided(eater))
             {
-                math.CreatePos(out newPos, radius);
+                math.CreatePos(radius, out newPos);
                 eater.Radius += 1.0f;
                 food.Position = newPos;
             }
